@@ -1,12 +1,14 @@
 import axios from 'axios';
 
 function joinUrl(base, path) {
-  if (!base.endsWith('/')) base += '/';
-  if (path.startsWith('/')) path = path.slice(1);
-  return base + path;
+  // Remove trailing slash from base if it exists
+  const cleanBase = base.endsWith('/') ? base.slice(0, -1) : base;
+  // Remove leading slash from path if it exists
+  const cleanPath = path.startsWith('/') ? path.slice(1) : path;
+  return `${cleanBase}/${cleanPath}`;
 }
 
-const API_BASE_URL = joinUrl(import.meta.env.VITE_BACKEND_URL, 'api/recipes');
+const API_BASE_URL = joinUrl(import.meta.env.VITE_BACKEND_URL || '', 'api/recipes');
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -21,7 +23,7 @@ export const searchRecipes = async (params) => {
   console.log('Full URL will be:', `${API_BASE_URL}/search`);
   
   try {
-    const response = await api.get('/search', { params });
+    const response = await api.get('search', { params });
     console.log('Frontend API response status:', response.status);
     console.log('Frontend API response data:', response.data);
     console.log('=== FRONTEND DEBUG - searchRecipes SUCCESS ===');
@@ -42,7 +44,7 @@ export const getRandomRecipes = async (params) => {
   console.log('Frontend API call params:', params);
   
   try {
-    const response = await api.get('/random', { params });
+    const response = await api.get('random', { params });
     console.log('Frontend API response status:', response.status);
     console.log('Frontend API response data keys:', Object.keys(response.data || {}));
     console.log('=== FRONTEND DEBUG - getRandomRecipes SUCCESS ===');
@@ -58,56 +60,56 @@ export const getRandomRecipes = async (params) => {
 };
 
 export const findRecipesByIngredients = async (params) => {
-  const response = await api.get('/find-by-ingredients', { params });
+  const response = await api.get('find-by-ingredients', { params });
   return response.data;
 };
 
 export const searchFoodVideos = async (params) => {
-  const response = await api.get('/videos', { params });
+  const response = await api.get('videos', { params });
   return response.data;
 };
 
 // Recipe Details
 export const getRecipeById = async (id) => {
-  const response = await api.get(`/${id}`);
+  const response = await api.get(`${id}`);
   return response.data;
 };
 
 export const getSimilarRecipes = async (id, params) => {
-  const response = await api.get(`/${id}/similar`, { params });
+  const response = await api.get(`${id}/similar`, { params });
   return response.data;
 };
 
 export const getRecipeNutrition = async (id) => {
-  const response = await api.get(`/${id}/nutrition`);
+  const response = await api.get(`${id}/nutrition`);
   return response.data;
 };
 
 export const getRecipePriceBreakdown = async (id) => {
-  const response = await api.get(`/${id}/price-breakdown`);
+  const response = await api.get(`${id}/price-breakdown`);
   return response.data;
 };
 
 export const getRecipeInstructions = async (id) => {
-  const response = await api.get(`/${id}/instructions`);
+  const response = await api.get(`${id}/instructions`);
   return response.data;
 };
 
 // Meal Planning
 export const generateMealPlan = async (params) => {
-  const response = await api.get('/meal-plan/generate', { params });
+  const response = await api.get('meal-plan/generate', { params });
   return response.data;
 };
 
 // Wine & Food Pairing
 export const getWinePairing = async (params) => {
-  const response = await api.get('/wine/pairing', { params });
+  const response = await api.get('wine/pairing', { params });
   return response.data;
 };
 
 // Nutrition Analysis
 export const analyzeRecipeNutrition = async (data) => {
-  const response = await api.post('/analyze-nutrition', data);
+  const response = await api.post('analyze-nutrition', data);
   return response.data;
 };
 
