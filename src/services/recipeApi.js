@@ -1,6 +1,12 @@
 import axios from 'axios';
 
-const API_BASE_URL = `${import.meta.env.VITE_BACKEND_URL}/api/recipes`;
+function joinUrl(base, path) {
+  if (!base.endsWith('/')) base += '/';
+  if (path.startsWith('/')) path = path.slice(1);
+  return base + path;
+}
+
+const API_BASE_URL = joinUrl(import.meta.env.VITE_BACKEND_URL, 'api/recipes');
 
 const api = axios.create({
   baseURL: API_BASE_URL,
